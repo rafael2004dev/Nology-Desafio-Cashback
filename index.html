@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Cashback</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px;}
+        input, select, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Simular Cashback</h2>
+        <label>Valor da Compra (R$):</label>
+        <input type="number" id="valor" step="0.01" required>
+        
+        <label>Tipo de Cliente:</label>
+        <select id="tipo">
+            <option value="normal">Normal</option>
+            <option value="vip">VIP</option>
+        </select>
+        
+        <button onclick="calcular()">Calcular</button>
+        <h3 id="resultado" style="color: green;"></h3>
+    </div>
+
+    <div class="card">
+        <h2>Seu Histórico (Filtrado por IP)</h2>
+        <table>
+            <thead>
+                <tr><th>Data</th><th>Cliente</th><th>Valor Compra</th><th>Cashback</th></tr>
+            </thead>
+            <tbody id="tabela-historico"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function carregarHistorico() {
+            const res = await fetch('/api/historico');
+            const data = await res.json();
+            const tbody = document.getElementById('tabela-historico');
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const dataFormatada = new Date(item.data_consulta).toLocaleString();
+                tbody.innerHTML += `<tr><td>${dataFormatada}</td><td>${item.tipo_cliente}</td><td>R$ ${item.valor_compra.toFixed(2)}</td><td>R$ ${item.cashback.toFixed(2)}</td></tr>`;
+            });
+        }
+
+        async function calcular() {
+            const valor = parseFloat(document.getElementById('valor').value);
+            const isVip = document.getElementById('tipo').value === 'vip';
+            
+            if(!valor) return alert("Insira um valor válido!");
+
+            const res = await fetch('/api/calcular', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ valor_compra: valor, is_vip: isVip })
+            });
+            const data = await res.json();
+            
+            document.getElementById('resultado').innerText = `Cashback a receber: R$ ${data.cashback.toFixed(2)}`;
+            carregarHistorico();
+        }
+
+        carregarHistorico();
+    </script>
+</body>
+</html>
