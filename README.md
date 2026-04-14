@@ -2,7 +2,8 @@
 
 Este projeto foi desenvolvido como resolução de um desafio técnico focado em aplicação de regras de negócio, desenvolvimento de API, persistência de dados em nuvem e deploy de uma aplicação Fullstack.
 
-🔗 **[Acesse a Aplicação em Produção Aqui]https://calculadora-cashback-nology.onrender.com/**
+🔗 **[Acesse a Aplicação em Produção Aqui] https://calculadora-cashback-nology.onrender.com/**
+Obs: Como a aplicação está hospedada no plano gratuito da Render, se o servidor ficar inativo por algum tempo, o primeiro acesso pode levar cerca de 50 segundos para 'acordar' e carregar a página. Os acessos seguintes serão instantâneos. 
 
 ---
 
